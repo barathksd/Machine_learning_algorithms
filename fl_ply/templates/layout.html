@@ -1,0 +1,240 @@
+
+
+<!DOCTYPE html>
+<html lang="jp">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        
+          <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+          <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+          <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        
+        <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>-->
+         <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+        
+        <script type=text/javascript src="{{ url_for('static',filename='form-validation.js') }}"></script>
+        <link rel="stylesheet" type="text/css" href={{ url_for("static",filename="index.css") }}></link>
+
+        <title>Find Wally</title>
+        
+        <style>
+            .form1 {
+                margin: 50px;
+                width: 500px;
+             }
+            * {
+                margin: 0;
+                padding: 0;
+                border: 0;
+                outline: 0;
+                font-size: 100%;
+                vertical-align: baseline;
+                background: transparent;
+            }
+         </style>
+
+         <script>
+            
+             $(document).ready(function(){
+                
+                let stime = document.getElementById("stime");
+                if(stime){
+                    stime.addEventListener('change',()=>{
+                        var val = stime.value;
+                        var split = val.split(":");
+                        var addmin = 10;
+                        var h = parseInt((parseInt(split[0])+(parseInt(split[1])+addmin)/60))%24;
+                        var m = ((parseInt(split[1])+addmin)%60);
+                        if ((h < 20 && h>=7) || (h == 20 && m==0)){
+                            h = h.toString();
+                            m = m.toString();
+                            if (h.length==1){
+                                h = "0"+h;
+                            }
+                            if (m.length==1){
+                                m = "0"+m;
+                            }
+                            
+                        }
+                        else{
+                            h = "20";
+                            m = "00";
+                        }
+                            
+                        //document.getElementById("empty").innerHTML = h+":"+m;
+                        document.getElementById("etime").value = h+":"+m;
+                        document.getElementById("etime").min = val;
+                    });
+                }
+            });
+            
+            
+            function validate(){
+                var sdate = $('#sdate').val();
+                if (sdate == null){
+                    sdate = new Date(2021,2,1,0,0)
+                }
+                var stime = new Date(sdate + " " + $('#stime').val());
+                var etime = new Date(sdate + " " + $('#etime').val());
+                if (etime == null){
+                    etime = new Date(stime.getTime() + 30*60000);
+                }
+                else if (stime > etime){
+                    document.getElementById('error').innerHTML = 'Start time shoud be less than or equal to End time';
+                    return alert('Start time shoud be less than or equal to End time');
+                }
+            }
+
+            let button2 = document.getElementById("formsubmit2");
+            if (button2){
+                button2.addEventListener('click', () => {
+                  $.ajax({
+                      url: '/sendimage',
+                      type: 'GET',
+                      contentType: "image/jpeg",
+                      success: function(result) {
+                        document.getElementById('wallyimage').src = 'data:image/png;base64,' + result;
+                      }
+                  });
+                });
+            }
+         </script>
+    </head>
+    
+    <body>
+        <header class="site-header">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <a class="navbar-brand" href="#">Navbar</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+                </button>
+            
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                    <a class="nav-link" href="#">Link</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Dropdown
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="#">Action</a>
+                        <a class="dropdown-item" href="#">Another action</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">Something else here</a>
+                    </div>
+                    </li>
+                    <li class="nav-item">
+                    <a class="nav-link disabled" href="#">Disabled</a>
+                    </li>
+                </ul>
+                </div>
+            </nav>
+        </header>
+        <div>
+            {% if title %}
+                <h2><center>{{title}}</center></h2>
+            {% else %}
+                <h2><center>ウォーリーを探せ!</center></h2>
+            {% endif %}
+            <hr></hr>
+            <div class="text-left m-5" ><p>Hi, welcome to the login page !!</p></div>
+        </div>
+
+        <div class="tab-content m-5">
+            <form method="POST" action="{{url_for('start')}}" class="form-inline my-2 my-lg-0" name="wallysearch" id="wallysearch">
+                {{ form.hidden_tag() }}
+                <fieldset class="form-group">
+                <div class="md-form mr-sm-2">
+                    {{ form.name.label(class="text-center") }}
+                    {% if form.name.errors %}
+                        {{ form.name(class="form-control mr-sm-2 is-invalid",placeholder="Search Wally") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.name.errors%}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>       
+                    {% else %}
+                        {{ form.name(class="form-control mr-sm-2",placeholder="Search Wally",value='all') }}
+                    {% endif %}
+                    
+                </div>
+                <div class="md-form mr-sm-2">
+                    {{ form.sdate.label(class="text-center") }}
+                    {% if form.sdate.errors %}
+                        {{ form.sdate(class="form-control form-control-lg is-invalid",type="date") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.sdate.errors%}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.sdate(class="form-control date",type="date") }}
+                    {% endif %}
+                    
+                </div>
+                <div class="md-form mr-sm-2">
+                    {{ form.stime.label(class="text-center") }}
+                    {% if form.stime.errors %}
+                        {{ form.stime(class="form-control form-control-lg is-invalid",type="time",min="07:00",max="20:00",value="10:10") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.stime.errors%}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.stime(class="form-control mr-sm-2",type="time",min="07:00",max="20:00",value="10:10") }}
+                    {% endif %}
+                
+                </div>
+                <div class="md-form mr-sm-2">
+                    {{ form.etime.label(class="text-center") }}
+                    {% if form.etime.errors %}
+                        {{ form.etime(class="form-control form-control-lg is-invalid",type="time",min="07:00",max="20:00",value="10:10") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.etime.errors%}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.etime(class="form-control mr-sm-2",type="time",min="07:00",max="20:00",value="10:10") }}
+                    {% endif %}
+                </div>
+                </fieldset>  
+                <div class="md-form mr-sm-2">
+                    {{ form.submit(class="btn btn-outline-success mt-4",id ="formsubmit",onclick="validate()") }}
+                </div>        
+                
+            </form>
+            {% if error is not none %}
+                <div class="errorbox" id="error">{{error}}</div>
+            {% endif %}
+            <div id="empty"></div>
+            <image id="wallyimage" src="">
+        </div>
+        
+        <div id="dashboard"></div>
+            {% if fig is not none %}
+                <script>
+                    var graph = {{ fig | safe }};
+                    Plotly.plot('dashboard', graph);
+                </script>
+            {% endif %}
+        </div>
+        <div id="live_dashboard"></div>
+        <div class="form1">
+            {% block content %} {% endblock %}
+        </div>
+        
+    </body>
+</html>

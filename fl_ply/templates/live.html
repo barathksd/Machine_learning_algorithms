@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block content %}
+    <script type=text/javascript>
+        function fetchdata(){
+            $.ajax({
+              url: '/livedata',
+              type: 'post',
+              success: function(data){
+                // Perform operation on the return value
+                // var livegraph = {{ data | safe }};
+                var data2 = JSON.parse(data);
+                Plotly.newPlot('live_dashboard', data2);
+              },
+              complete:function(data){
+               setTimeout(fetchdata,5000);
+              }
+             });
+            }
+            
+            $(document).ready(function(){
+             setTimeout(fetchdata,5000);
+            });
+                
+    </script>
+    
+
+{% endblock content %}
