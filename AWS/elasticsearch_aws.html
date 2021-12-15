@@ -13081,7 +13081,7 @@ div#notebook {
 
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="prompt input_prompt">In&nbsp;[44]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#必要なライブラリの導入</span>
@@ -13090,6 +13090,7 @@ div#notebook {
 <span class="o">!</span>pip install requests
 <span class="o">!</span>pip install requests-aws4auth
 <span class="o">!</span>pip install <span class="nv">pycryptodome</span><span class="o">==</span><span class="m">3</span>.0.0
+<span class="c1">#!conda install ghostscript</span>
 
 <span class="c1">#ライブラリの輸入</span>
 <span class="kn">import</span> <span class="nn">os</span>
@@ -13135,17 +13136,17 @@ You should consider upgrading via the &#39;/home/ec2-user/anaconda3/envs/python3
 Requirement already satisfied: requests in /home/ec2-user/anaconda3/envs/python3/lib/python3.6/site-packages (2.26.0)
 Requirement already satisfied: certifi&gt;=2017.4.17 in /home/ec2-user/anaconda3/envs/python3/lib/python3.6/site-packages (from requests) (2021.10.8)
 Requirement already satisfied: charset-normalizer~=2.0.0 in /home/ec2-user/anaconda3/envs/python3/lib/python3.6/site-packages (from requests) (2.0.7)
-Requirement already satisfied: idna&lt;4,&gt;=2.5 in /home/ec2-user/anaconda3/envs/python3/lib/python3.6/site-packages (from requests) (3.3)
 Requirement already satisfied: urllib3&lt;1.27,&gt;=1.21.1 in /home/ec2-user/anaconda3/envs/python3/lib/python3.6/site-packages (from requests) (1.26.7)
+Requirement already satisfied: idna&lt;4,&gt;=2.5 in /home/ec2-user/anaconda3/envs/python3/lib/python3.6/site-packages (from requests) (3.3)
 <span class="ansi-yellow-fg">WARNING: You are using pip version 21.2.4; however, version 21.3.1 is available.
 You should consider upgrading via the &#39;/home/ec2-user/anaconda3/envs/python3/bin/python -m pip install --upgrade pip&#39; command.</span>
 Requirement already satisfied: requests-aws4auth in /home/ec2-user/anaconda3/envs/python3/lib/python3.6/site-packages (1.1.1)
 Requirement already satisfied: requests in /home/ec2-user/anaconda3/envs/python3/lib/python3.6/site-packages (from requests-aws4auth) (2.26.0)
 Requirement already satisfied: six in /home/ec2-user/anaconda3/envs/python3/lib/python3.6/site-packages (from requests-aws4auth) (1.16.0)
+Requirement already satisfied: certifi&gt;=2017.4.17 in /home/ec2-user/anaconda3/envs/python3/lib/python3.6/site-packages (from requests-&gt;requests-aws4auth) (2021.10.8)
+Requirement already satisfied: charset-normalizer~=2.0.0 in /home/ec2-user/anaconda3/envs/python3/lib/python3.6/site-packages (from requests-&gt;requests-aws4auth) (2.0.7)
 Requirement already satisfied: idna&lt;4,&gt;=2.5 in /home/ec2-user/anaconda3/envs/python3/lib/python3.6/site-packages (from requests-&gt;requests-aws4auth) (3.3)
 Requirement already satisfied: urllib3&lt;1.27,&gt;=1.21.1 in /home/ec2-user/anaconda3/envs/python3/lib/python3.6/site-packages (from requests-&gt;requests-aws4auth) (1.26.7)
-Requirement already satisfied: charset-normalizer~=2.0.0 in /home/ec2-user/anaconda3/envs/python3/lib/python3.6/site-packages (from requests-&gt;requests-aws4auth) (2.0.7)
-Requirement already satisfied: certifi&gt;=2017.4.17 in /home/ec2-user/anaconda3/envs/python3/lib/python3.6/site-packages (from requests-&gt;requests-aws4auth) (2021.10.8)
 <span class="ansi-yellow-fg">WARNING: You are using pip version 21.2.4; however, version 21.3.1 is available.
 You should consider upgrading via the &#39;/home/ec2-user/anaconda3/envs/python3/bin/python -m pip install --upgrade pip&#39; command.</span>
 Requirement already satisfied: pycryptodome==3.0.0 in /home/ec2-user/anaconda3/envs/python3/lib/python3.6/site-packages (3.0)
@@ -13161,24 +13162,20 @@ You should consider upgrading via the &#39;/home/ec2-user/anaconda3/envs/python3
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[72]:</div>
+<div class="prompt input_prompt">In&nbsp;[42]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#認証情報の設定</span>
-<span class="n">host</span> <span class="o">=</span> <span class="s1">&#39;search-mydomain-fxlwoz53tqmg6ikrb72q3wv27m.ap-northeast-1.es.amazonaws.com&#39;</span> <span class="c1"># For example, my-test-domain.us-east-1.es.amazonaws.com</span>
-<span class="n">region</span> <span class="o">=</span> <span class="s1">&#39;ap-northeast-1&#39;</span> <span class="c1"># e.g. us-west-1</span>
-
-<span class="n">service</span> <span class="o">=</span> <span class="s1">&#39;es&#39;</span>
-<span class="n">credentials</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span><span class="o">.</span><span class="n">get_credentials</span><span class="p">()</span>
-<span class="n">awsauth</span> <span class="o">=</span> <span class="n">AWS4Auth</span><span class="p">(</span><span class="n">credentials</span><span class="o">.</span><span class="n">access_key</span><span class="p">,</span> <span class="n">credentials</span><span class="o">.</span><span class="n">secret_key</span><span class="p">,</span> <span class="n">region</span><span class="p">,</span> <span class="n">service</span><span class="p">,</span> <span class="n">session_token</span><span class="o">=</span><span class="n">credentials</span><span class="o">.</span><span class="n">token</span><span class="p">,</span><span class="n">username</span><span class="o">=</span><span class="s1">&#39;myuser&#39;</span><span class="p">,</span><span class="n">password</span><span class="o">=</span><span class="s1">&#39;Mypass@123&#39;</span><span class="p">)</span>
-<span class="n">auth</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;username&#39;</span><span class="p">,</span> <span class="s1">&#39;password&#39;</span><span class="p">)</span>
-<span class="n">search</span> <span class="o">=</span> <span class="n">OpenSearch</span><span class="p">(</span>
-    <span class="n">hosts</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;host&#39;</span><span class="p">:</span> <span class="n">host</span><span class="p">,</span> <span class="s1">&#39;port&#39;</span><span class="p">:</span> <span class="mi">443</span><span class="p">}],</span>
-    <span class="n">http_auth</span> <span class="o">=</span> <span class="n">auth</span><span class="p">,</span>
-    <span class="n">use_ssl</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">verify_certs</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">connection_class</span> <span class="o">=</span> <span class="n">RequestsHttpConnection</span>
-<span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">get_credentials</span><span class="p">():</span>
+    <span class="n">host</span> <span class="o">=</span> <span class="s1">&#39;search-mydomain-fxlwoz53tqmg6ikrb72q3wv27m.ap-northeast-1.es.amazonaws.com&#39;</span> <span class="c1"># For example, my-test-domain.us-east-1.es.amazonaws.com</span>
+    <span class="n">region</span> <span class="o">=</span> <span class="s1">&#39;ap-northeast-1&#39;</span> <span class="c1"># e.g. us-west-1</span>
+    <span class="n">auth</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;username&#39;</span><span class="p">,</span> <span class="s1">&#39;password&#39;</span><span class="p">)</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="p">{</span>
+         <span class="s2">&quot;query&quot;</span><span class="p">:</span> <span class="p">{</span>
+           <span class="s2">&quot;match_all&quot;</span><span class="p">:</span> <span class="p">{}</span>
+         <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;https://</span><span class="si">{</span><span class="n">host</span><span class="si">}</span><span class="s1">/mmc/pdf/_search&#39;</span>
+    <span class="k">return</span> <span class="n">host</span><span class="p">,</span> <span class="n">region</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">auth</span>
 </pre></div>
 
     </div>
@@ -13188,7 +13185,41 @@ You should consider upgrading via the &#39;/home/ec2-user/anaconda3/envs/python3
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="prompt input_prompt">In&nbsp;[45]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#認証情報の設定</span>
+
+<span class="n">service</span> <span class="o">=</span> <span class="s1">&#39;es&#39;</span>
+<span class="n">credentials</span> <span class="o">=</span> <span class="n">boto3</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span><span class="o">.</span><span class="n">get_credentials</span><span class="p">()</span>
+<span class="n">awsauth</span> <span class="o">=</span> <span class="n">AWS4Auth</span><span class="p">(</span><span class="n">credentials</span><span class="o">.</span><span class="n">access_key</span><span class="p">,</span> <span class="n">credentials</span><span class="o">.</span><span class="n">secret_key</span><span class="p">,</span> <span class="n">region</span><span class="p">,</span> <span class="n">service</span><span class="p">,</span> <span class="n">session_token</span><span class="o">=</span><span class="n">credentials</span><span class="o">.</span><span class="n">token</span><span class="p">,</span><span class="n">username</span><span class="o">=</span><span class="s1">&#39;myuser&#39;</span><span class="p">,</span><span class="n">password</span><span class="o">=</span><span class="s1">&#39;Mypass@123&#39;</span><span class="p">)</span>
+
+<span class="n">host</span><span class="p">,</span> <span class="n">region</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">auth</span> <span class="o">=</span> <span class="n">get_credentials</span><span class="p">()</span>
+
+<span class="n">search</span> <span class="o">=</span> <span class="n">OpenSearch</span><span class="p">(</span>
+    <span class="n">hosts</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;host&#39;</span><span class="p">:</span> <span class="n">host</span><span class="p">,</span> <span class="s1">&#39;port&#39;</span><span class="p">:</span> <span class="mi">443</span><span class="p">}],</span>
+    <span class="n">http_auth</span> <span class="o">=</span> <span class="n">auth</span><span class="p">,</span>
+    <span class="n">use_ssl</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">verify_certs</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">connection_class</span> <span class="o">=</span> <span class="n">RequestsHttpConnection</span>
+<span class="p">)</span>
+
+<span class="c1"># OpensearchにDFの登録</span>
+<span class="k">def</span> <span class="nf">register</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="n">search</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">name</span><span class="p">,</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">name</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)])</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">search</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s2">&quot;books&quot;</span><span class="p">,</span> <span class="n">doc_type</span><span class="o">=</span><span class="s2">&quot;pdf&quot;</span><span class="p">,</span><span class="nb">id</span><span class="o">=</span><span class="n">row</span><span class="p">,</span><span class="n">body</span><span class="o">=</span><span class="n">body</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[31]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 読み込むファイルの設定</span>
@@ -13211,7 +13242,7 @@ You should consider upgrading via the &#39;/home/ec2-user/anaconda3/envs/python3
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>[&#39;wagahai.pdf&#39;, &#39;japanese_vw.pdf&#39;, &#39;nw.pdf&#39;, &#39;ns.pdf&#39;]
+<pre>[&#39;19_D2_1910.pdf&#39;, &#39;21_mirage_Acc_2102.pdf&#39;, &#39;d1.pdf&#39;, &#39;20_MIRAGE_1910.pdf&#39;]
 </pre>
 </div>
 </div>
@@ -13222,7 +13253,7 @@ You should consider upgrading via the &#39;/home/ec2-user/anaconda3/envs/python3
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># PDFを読み込んでPandas DFに保存する関数の開発</span>
@@ -13243,6 +13274,7 @@ You should consider upgrading via the &#39;/home/ec2-user/anaconda3/envs/python3
         <span class="n">num</span> <span class="o">=</span> <span class="mi">63</span>
     <span class="k">return</span> <span class="n">num</span>
 
+
 <span class="k">def</span> <span class="nf">extract</span><span class="p">(</span><span class="n">t2</span><span class="p">):</span>
     <span class="n">pattern</span> <span class="o">=</span> <span class="s1">&#39;\(cid:[0-9]+\)&#39;</span>
     <span class="nb">iter</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="n">t2</span><span class="p">,</span><span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span><span class="p">)</span>
@@ -13259,7 +13291,7 @@ You should consider upgrading via the &#39;/home/ec2-user/anaconda3/envs/python3
     <span class="n">s</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;[&quot; &quot;]+&#39;</span><span class="p">,</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="n">s</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">s</span>
     
-<span class="k">def</span> <span class="nf">convert_pdf_to_txt</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">txtname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">buf</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">convert_pdf_to_txt</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">txtname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">buf</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">bytesObj</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 
     <span class="n">rsrcmgr</span> <span class="o">=</span> <span class="n">PDFResourceManager</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">buf</span><span class="p">:</span>
@@ -13272,8 +13304,10 @@ You should consider upgrading via the &#39;/home/ec2-user/anaconda3/envs/python3
     <span class="n">laparams</span> <span class="o">=</span> <span class="n">LAParams</span><span class="p">()</span>
     <span class="n">laparams</span><span class="o">.</span><span class="n">detect_vertical</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">device</span> <span class="o">=</span> <span class="n">TextConverter</span><span class="p">(</span><span class="n">rsrcmgr</span><span class="p">,</span> <span class="n">outfp</span><span class="p">,</span> <span class="n">laparams</span><span class="o">=</span><span class="n">laparams</span><span class="p">)</span>
-
-    <span class="n">fp</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span><span class="n">path</span><span class="p">),</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">bytesObj</span><span class="p">:</span>
+        <span class="n">fp</span> <span class="o">=</span> <span class="n">path</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">fp</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span><span class="n">path</span><span class="p">),</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span>
     <span class="n">interpreter</span> <span class="o">=</span> <span class="n">PDFPageInterpreter</span><span class="p">(</span><span class="n">rsrcmgr</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">page</span> <span class="ow">in</span> <span class="n">PDFPage</span><span class="o">.</span><span class="n">get_pages</span><span class="p">(</span><span class="n">fp</span><span class="p">):</span>
         <span class="n">interpreter</span><span class="o">.</span><span class="n">process_page</span><span class="p">(</span><span class="n">page</span><span class="p">)</span>
@@ -13306,19 +13340,88 @@ You should consider upgrading via the &#39;/home/ec2-user/anaconda3/envs/python3
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 関数の実行</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;file&#39;</span><span class="p">,</span><span class="s1">&#39;content&#39;</span><span class="p">])</span>
-<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># ESに登録する</span>
 
-<span class="n">loc</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
-    <span class="n">doc</span> <span class="o">=</span> <span class="n">convert_pdf_to_txt</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
-    <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">loc</span><span class="p">]</span> <span class="o">=</span> <span class="n">file</span><span class="p">,</span><span class="n">doc</span>
-    <span class="n">loc</span> <span class="o">+=</span> <span class="mi">1</span>
+<span class="kn">from</span> <span class="nn">zipfile</span> <span class="kn">import</span> <span class="n">ZipFile</span>
+<span class="kn">import</span> <span class="nn">io</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span>
+
+<span class="n">file_name</span> <span class="o">=</span> <span class="s1">&#39;mmc.zip&#39;</span>
+
+<span class="k">with</span> <span class="n">ZipFile</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="nb">zip</span><span class="p">:</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="nb">zip</span><span class="o">.</span><span class="n">filelist</span>
+    <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+    <span class="n">loc</span> <span class="o">=</span> <span class="mi">0</span>
+    
+    <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">a</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span><span class="n">file</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="nb">zip</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">()</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">doc</span> <span class="o">=</span> <span class="n">convert_pdf_to_txt</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">bytesObj</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+        <span class="n">body</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span><span class="n">file</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span><span class="s1">&#39;data&#39;</span><span class="p">:</span><span class="n">doc</span><span class="p">}</span>
+        <span class="n">search</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s2">&quot;mmc&quot;</span><span class="p">,</span> <span class="n">doc_type</span><span class="o">=</span><span class="s2">&quot;pdf&quot;</span><span class="p">,</span><span class="nb">id</span><span class="o">=</span><span class="n">loc</span><span class="p">,</span><span class="n">body</span><span class="o">=</span><span class="n">body</span><span class="p">)</span>
+        <span class="n">loc</span> <span class="o">+=</span> <span class="mi">1</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[31]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[34]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># asynchronous 1</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">aiohttp</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">url</span><span class="p">,</span><span class="n">query</span><span class="p">,</span><span class="n">auth</span><span class="p">):</span>
+    <span class="n">tl</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1">#url2 = &#39;https://pokeapi.co/api/v2/pokemon/1&#39;</span>
+    <span class="n">auth</span><span class="o">=</span> <span class="n">aiohttp</span><span class="o">.</span><span class="n">BasicAuth</span><span class="p">(</span><span class="n">auth</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">auth</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">aiohttp</span><span class="o">.</span><span class="n">ClientSession</span><span class="p">()</span> <span class="k">as</span> <span class="n">session</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+            <span class="k">async</span> <span class="k">with</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span><span class="n">json</span><span class="o">=</span><span class="n">query</span><span class="p">,</span><span class="n">auth</span><span class="o">=</span><span class="n">auth</span><span class="p">)</span> <span class="k">as</span> <span class="n">resp</span><span class="p">:</span>
+                <span class="n">_</span> <span class="o">=</span> <span class="k">await</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+                
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;async&#39;</span><span class="p">,</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">s</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">host</span><span class="p">,</span><span class="n">region</span><span class="p">,</span><span class="n">url</span><span class="p">,</span><span class="n">query</span><span class="p">,</span><span class="n">auth</span> <span class="o">=</span> <span class="n">get_credentials</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
+        <span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">main</span><span class="p">(</span><span class="n">url</span><span class="p">,</span><span class="n">query</span><span class="p">,</span><span class="n">auth</span><span class="p">))</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="k">pass</span>
 </pre></div>
 
     </div>
@@ -13335,10 +13438,8 @@ You should consider upgrading via the &#39;/home/ec2-user/anaconda3/envs/python3
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>wagahai.pdf
-japanese_vw.pdf
-nw.pdf
-ns.pdf
+<pre>This event loop is already running
+async 8.126174688339233
 </pre>
 </div>
 </div>
@@ -13349,11 +13450,50 @@ ns.pdf
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="prompt input_prompt">In&nbsp;[36]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;あった&#39;</span><span class="p">,</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;content&#39;</span><span class="p">]))</span>
-<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># asynchronous 2</span>
+
+<span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">aiohttp</span>
+
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">gather_with_concurrency</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="o">*</span><span class="n">tasks</span><span class="p">):</span>
+    <span class="n">semaphore</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Semaphore</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">sem_task</span><span class="p">(</span><span class="n">task</span><span class="p">):</span>
+        <span class="k">async</span> <span class="k">with</span> <span class="n">semaphore</span><span class="p">:</span>
+            <span class="k">return</span> <span class="k">await</span> <span class="n">task</span>
+
+    <span class="k">return</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">sem_task</span><span class="p">(</span><span class="n">task</span><span class="p">)</span> <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">tasks</span><span class="p">))</span>
+
+
+<span class="k">async</span> <span class="k">def</span> <span class="nf">get_async</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">json_data</span><span class="p">,</span> <span class="n">auth</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span><span class="n">json</span><span class="o">=</span><span class="n">json_data</span><span class="p">,</span><span class="n">auth</span><span class="o">=</span><span class="n">auth</span><span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="k">await</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+        
+<span class="k">async</span> <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">auth</span><span class="p">):</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">aiohttp</span><span class="o">.</span><span class="n">TCPConnector</span><span class="p">(</span><span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ttl_dns_cache</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+    <span class="n">session</span> <span class="o">=</span> <span class="n">aiohttp</span><span class="o">.</span><span class="n">ClientSession</span><span class="p">(</span><span class="n">connector</span><span class="o">=</span><span class="n">conn</span><span class="p">)</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">auth</span> <span class="o">=</span> <span class="n">aiohttp</span><span class="o">.</span><span class="n">BasicAuth</span><span class="p">(</span><span class="n">auth</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">auth</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">conc_req</span> <span class="o">=</span> <span class="mi">40</span>
+    <span class="n">now</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="k">await</span> <span class="n">gather_with_concurrency</span><span class="p">(</span><span class="n">conc_req</span><span class="p">,</span> <span class="o">*</span><span class="p">[</span><span class="n">get_async</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">auth</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">)])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">now</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+
+    <span class="n">host</span><span class="p">,</span><span class="n">region</span><span class="p">,</span><span class="n">url</span><span class="p">,</span><span class="n">query</span><span class="p">,</span><span class="n">auth</span> <span class="o">=</span> <span class="n">get_credentials</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
+        <span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">main</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">auth</span><span class="p">))</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="k">pass</span>
 </pre></div>
 
     </div>
@@ -13366,59 +13506,14 @@ ns.pdf
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[18]:</div>
+    <div class="prompt"></div>
 
 
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>file</th>
-      <th>content</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>wagahai.pdf</td>
-      <td>吾輩は猫である\n夏目漱石\n一\n　　\n　\n????吾輩　は猫である。名前はまだ無...</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>japanese_vw.pdf</td>
-      <td>サイバ?犯罪に関する条約\nサイバ?犯罪に関する条約\n前文\n欧州評議会の加盟国及びこの...</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>nw.pdf</td>
-      <td>ノルウェイの森 \n 第 一 章 \t\r \n僕は三十七歳で、そのときボーイング 747 ...</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>ns.pdf</td>
-      <td>人間失格\n太宰治\n　　　\n　　\n　　はしがき\n私は、その男の写真を三葉、見たこ...</td>
-    </tr>
-  </tbody>
-</table>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>This event loop is already running
+10.305302143096924
+</pre>
 </div>
-</div>
-
 </div>
 
 </div>
@@ -13427,16 +13522,152 @@ ns.pdf
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[26]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># OpensearchにDFの登録</span>
-<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-    <span class="n">body</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">name</span><span class="p">,</span><span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="n">name</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)])</span>
-    <span class="n">search</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s2">&quot;books&quot;</span><span class="p">,</span> <span class="n">doc_type</span><span class="o">=</span><span class="s2">&quot;pdf&quot;</span><span class="p">,</span><span class="n">body</span><span class="o">=</span><span class="n">body</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span> 
 </pre></div>
 
     </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[39]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># asynchronous 3</span>
+
+<span class="kn">from</span> <span class="nn">queue</span> <span class="kn">import</span> <span class="n">Queue</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Thread</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+
+<span class="k">class</span> <span class="nc">Worker</span><span class="p">(</span><span class="n">Thread</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Thread executing tasks from a given tasks queue &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tasks</span><span class="p">):</span>
+        <span class="n">Thread</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span> <span class="o">=</span> <span class="n">tasks</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">func</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="c1"># An exception happened in this thread</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="k">finally</span><span class="p">:</span>
+                <span class="c1"># Mark this task as done, whether an exception happened or not</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">task_done</span><span class="p">()</span>
+
+
+<span class="k">class</span> <span class="nc">ThreadPool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; Pool of threads consuming tasks from a queue &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_threads</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span> <span class="o">=</span> <span class="n">Queue</span><span class="p">(</span><span class="n">num_threads</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_threads</span><span class="p">):</span>
+            <span class="n">Worker</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">add_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Add a task to the queue &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">put</span><span class="p">((</span><span class="n">func</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kargs</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">auth</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Add a list of tasks to the queue &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_task</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span><span class="n">query</span><span class="p">,</span><span class="n">auth</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">wait_completion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Wait for completion of all the tasks in the queue &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span><span class="n">query</span><span class="p">,</span><span class="n">auth</span><span class="p">):</span>
+    <span class="n">_</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span><span class="n">json</span><span class="o">=</span><span class="n">query</span><span class="p">,</span><span class="n">auth</span><span class="o">=</span><span class="n">auth</span><span class="p">)</span>
+
+
+<span class="n">host</span><span class="p">,</span><span class="n">region</span><span class="p">,</span><span class="n">url</span><span class="p">,</span><span class="n">query</span><span class="p">,</span><span class="n">auth</span> <span class="o">=</span> <span class="n">get_credentials</span><span class="p">()</span>
+
+<span class="n">pool</span> <span class="o">=</span> <span class="n">ThreadPool</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">session</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">session</span><span class="p">()</span>
+
+<span class="n">now</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">pool</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">get</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">auth</span><span class="p">)</span>
+<span class="n">pool</span><span class="o">.</span><span class="n">wait_completion</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">now</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>17.608646154403687
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[41]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># synchronous</span>
+
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="n">host</span><span class="p">,</span><span class="n">region</span><span class="p">,</span><span class="n">url</span><span class="p">,</span><span class="n">query</span><span class="p">,</span><span class="n">auth</span> <span class="o">=</span> <span class="n">get_credentials</span><span class="p">()</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+    <span class="n">_</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span><span class="n">json</span><span class="o">=</span><span class="n">query</span><span class="p">,</span><span class="n">auth</span><span class="o">=</span><span class="n">auth</span><span class="p">)</span>
+    
+<span class="nb">print</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">a</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>13.104223489761353
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -13447,7 +13678,10 @@ ns.pdf
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># REST APIで検索</span>
-<span class="n">res</span> <span class="o">=</span> <span class="n">search</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s2">&quot;books&quot;</span><span class="p">,</span> <span class="n">doc_type</span><span class="o">=</span><span class="s2">&quot;pdf&quot;</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;query&#39;</span><span class="p">:{</span><span class="s1">&#39;match_phrase&#39;</span><span class="p">:{</span><span class="s1">&#39;content&#39;</span><span class="p">:</span><span class="s1">&#39;犯罪&#39;</span><span class="p">}}})</span>
+<span class="n">res</span> <span class="o">=</span> <span class="n">search</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="s2">&quot;mmc&quot;</span><span class="p">,</span> <span class="n">doc_type</span><span class="o">=</span><span class="s2">&quot;pdf&quot;</span><span class="p">,</span> <span class="n">body</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;query&#39;</span><span class="p">:{</span><span class="s1">&#39;match_all&#39;</span><span class="p">:{}}})</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s1">&#39;hits&#39;</span><span class="p">][</span><span class="s1">&#39;hits&#39;</span><span class="p">])):</span>
+    <span class="n">res</span><span class="p">[</span><span class="s1">&#39;hits&#39;</span><span class="p">][</span><span class="s1">&#39;hits&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;_source&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s1">&#39;hits&#39;</span><span class="p">][</span><span class="s1">&#39;hits&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
 </pre></div>
 
     </div>
@@ -13471,118 +13705,6 @@ ns.pdf
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[52]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s1">&#39;hits&#39;</span><span class="p">][</span><span class="s1">&#39;hits&#39;</span><span class="p">])):</span>
-    <span class="n">res</span><span class="p">[</span><span class="s1">&#39;hits&#39;</span><span class="p">][</span><span class="s1">&#39;hits&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;_source&#39;</span><span class="p">][</span><span class="s1">&#39;content&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>{&#39;took&#39;: 33, &#39;timed_out&#39;: False, &#39;_shards&#39;: {&#39;total&#39;: 5, &#39;successful&#39;: 5, &#39;skipped&#39;: 0, &#39;failed&#39;: 0}, &#39;hits&#39;: {&#39;total&#39;: {&#39;value&#39;: 3, &#39;relation&#39;: &#39;eq&#39;}, &#39;max_score&#39;: 1.0290726, &#39;hits&#39;: [{&#39;_index&#39;: &#39;books&#39;, &#39;_type&#39;: &#39;pdf&#39;, &#39;_id&#39;: &#39;h76UUX0B0JcIBnkGYzxR&#39;, &#39;_score&#39;: 1.0290726, &#39;_source&#39;: {&#39;file&#39;: &#39;ns.pdf&#39;, &#39;content&#39;: &#39;&#39;}}, {&#39;_index&#39;: &#39;books&#39;, &#39;_type&#39;: &#39;pdf&#39;, &#39;_id&#39;: &#39;hb6UUX0B0JcIBnkGYjzt&#39;, &#39;_score&#39;: 0.7997511, &#39;_source&#39;: {&#39;file&#39;: &#39;japanese_vw.pdf&#39;, &#39;content&#39;: &#39;&#39;}}, {&#39;_index&#39;: &#39;books&#39;, &#39;_type&#39;: &#39;pdf&#39;, &#39;_id&#39;: &#39;hL6UUX0B0JcIBnkGYjxI&#39;, &#39;_score&#39;: 0.27036184, &#39;_source&#39;: {&#39;file&#39;: &#39;wagahai.pdf&#39;, &#39;content&#39;: &#39;&#39;}}]}}
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[53]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 結果の確認</span>
-<span class="n">res</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[53]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>{&#39;took&#39;: 33,
- &#39;timed_out&#39;: False,
- &#39;_shards&#39;: {&#39;total&#39;: 5, &#39;successful&#39;: 5, &#39;skipped&#39;: 0, &#39;failed&#39;: 0},
- &#39;hits&#39;: {&#39;total&#39;: {&#39;value&#39;: 3, &#39;relation&#39;: &#39;eq&#39;},
-  &#39;max_score&#39;: 1.0290726,
-  &#39;hits&#39;: [{&#39;_index&#39;: &#39;books&#39;,
-    &#39;_type&#39;: &#39;pdf&#39;,
-    &#39;_id&#39;: &#39;h76UUX0B0JcIBnkGYzxR&#39;,
-    &#39;_score&#39;: 1.0290726,
-    &#39;_source&#39;: {&#39;file&#39;: &#39;ns.pdf&#39;, &#39;content&#39;: &#39;&#39;}},
-   {&#39;_index&#39;: &#39;books&#39;,
-    &#39;_type&#39;: &#39;pdf&#39;,
-    &#39;_id&#39;: &#39;hb6UUX0B0JcIBnkGYjzt&#39;,
-    &#39;_score&#39;: 0.7997511,
-    &#39;_source&#39;: {&#39;file&#39;: &#39;japanese_vw.pdf&#39;, &#39;content&#39;: &#39;&#39;}},
-   {&#39;_index&#39;: &#39;books&#39;,
-    &#39;_type&#39;: &#39;pdf&#39;,
-    &#39;_id&#39;: &#39;hL6UUX0B0JcIBnkGYjxI&#39;,
-    &#39;_score&#39;: 0.27036184,
-    &#39;_source&#39;: {&#39;file&#39;: &#39;wagahai.pdf&#39;, &#39;content&#39;: &#39;&#39;}}]}}</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># メモ</span>
@@ -13621,34 +13743,133 @@ ns.pdf
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
 
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>12353 ぁ 12354 あ 12355 ぃ 12356 い 12357 ぅ 12358 う 12359 ぇ 12360 え 12361 ぉ 12362 お 12363 か 12364 が 12365 き 12366 ぎ 12367 く 12368 ぐ 12369 け 12370 げ 12371 こ 12372 ご 12373 さ 12374 ざ 12375 し 12376 じ 12377 す 12378 ず 12379 せ 12380 ぜ 12381 そ 12382 ぞ 12383 た 12384 だ 12385 ち 12386 ぢ 12387 っ 12388 つ 12389 づ 12390 て 12391 で 12392 と 12393 ど 12394 な 12395 に 12396 ぬ 12397 ね 12398 の 12399 は 12400 ば 12401 ぱ 12402 ひ 12403 び 12404 ぴ 12405 ふ 12406 ぶ 12407 ぷ 12408 へ 12409 べ 12410 ぺ 12411 ほ 12412 ぼ 12413 ぽ 12414 ま 12415 み 12416 む 12417 め 12418 も 12419 ゃ 12420 や 12421 ゅ 12422 ゆ 12423 ょ 12424 よ 12425 ら 12426 り 12427 る 12428 れ 12429 ろ 12430 ゎ 12431 わ 12432 ゐ 12433 ゑ 12434 を 12435 ん 12436 ゔ 12437 ゕ 12438 ゖ 12439 ゗ 12440 ゘ 12441 ゙ 12442 ゚ 12443 ゛ 12444 ゜ 12445 ゝ 12446 ゞ 12447 ゟ 12448 ゠ 12449 ァ 12450 ア 12451 ィ 12452 イ 12453 ゥ 12454 ウ 12455 ェ 12456 エ 12457 ォ 12458 オ 12459 カ 12460 ガ 12461 キ 12462 ギ 12463 ク 12464 グ 12465 ケ 12466 ゲ 12467 コ 12468 ゴ 12469 サ 12470 ザ 12471 シ 12472 ジ 12473 ス 12474 ズ 12475 セ 12476 ゼ 12477 ソ 12478 ゾ 12479 タ 12480 ダ 12481 チ 12482 ヂ 12483 ッ 12484 ツ 12485 ヅ 12486 テ 12487 デ 12488 ト 12489 ド 12490 ナ 12491 ニ 12492 ヌ 12493 ネ 12494 ノ 12495 ハ 12496 バ 12497 パ 12498 ヒ 12499 ビ 12500 ピ 12501 フ 12502 ブ 12503 プ 12504 ヘ 12505 ベ 12506 ペ 12507 ホ 12508 ボ 12509 ポ 12510 マ 12511 ミ 12512 ム 12513 メ 12514 モ 12515 ャ 12516 ヤ 12517 ュ 12518 ユ 12519 ョ 12520 ヨ 12521 ラ 12522 リ 12523 ル 12524 レ 12525 ロ 12526 ヮ 12527 ワ 12528 ヰ 12529 ヱ 12530 ヲ 12531 ン 12532 ヴ 12533 ヵ 12534 ヶ 12535 ヷ 12536 ヸ 12537 ヹ 12538 ヺ 12539 ・ 12540 ー 12541 ヽ 
-</pre>
+    </div>
 </div>
 </div>
 
-<div class="output_area">
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
 
-    <div class="prompt output_prompt">Out[2]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>&#39;\na 12354 12459 105\ni 12356 12461 105\nu 12358 12463 105\ne 12360\no 12362 12467 105\nka 12363 12469 106\nga 12364 12470 106\n\nku 12367 12473 106\ngu             106\nke 12369 12476 107\nge 12370 12477 107\nko 12372  108\n\nwo 108\nn\n\n\nNi 12491 12593 102\n\nsYa 12515 12617 102\n    \n-- 12540 12547 7\n&#39;</pre>
+    </div>
+</div>
 </div>
 
 </div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
 
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+    </div>
 </div>
 </div>
 

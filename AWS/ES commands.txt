@@ -1,0 +1,48 @@
+GET mmc/pdf/_search?size=100
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "exists": {
+            "field": "data"
+          }
+        }
+      ],
+      "must_not": [
+        {
+          "wildcard": {
+            "data": "*"
+          }
+        }
+      ]
+    }
+  }
+}
+
+
+GET mmc/pdf/_search
+{
+    "query": {"match_all": {}
+  }
+}
+
+GET mmc/_mapping
+
+GET _cat/indices
+
+
+POST mmc/pdf/_delete_by_query
+{
+  "query": {
+    "bool": {
+      "must_not": [
+        {
+          "exists": {
+            "field": "data"
+          }
+        }
+      ]
+    }
+  }
+}
